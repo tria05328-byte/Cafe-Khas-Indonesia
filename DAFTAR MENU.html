@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-t" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cafe Khas Indonesia - Tri Asiyah Agustine</title>
+  <meta name="description" content="Cafe Khas Indonesia - Menu khas Nusantara. Pemilik: Tri Asiyah Agustine. Bandung, Berdiri 2025." />
+  <style>
+    /* === PERUBAHAN WARNA: Skema Hijau === */
+    :root{
+      --bg:#ab326c; /* Latar belakang hijau sangat muda */
+      --card:#ffffff;
+      --accent:#7a0606; /* Aksen hijau tua */
+      --muted:#090808;
+      --glass: rgba(102, 3, 3, 0.04);
+      --radius:12px; --maxw:1100px;
+      --shadow: 0 6px 18px rgba(16,24,40,0.08);
+    }
+    /* === END: Perubahan Warna === */
+
+    *{box-sizing:border-box}
+    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin:0; background:linear-gradient(180deg, var(--bg), #fff); color:#111}
+    .container{max-width:var(--maxw); margin:28px auto; padding:20px}
+
+    header{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px}
+    .brand{display:flex; gap:14px; align-items:center}
+    /* === PERUBAHAN WARNA: Gradient logo disesuaikan === */
+    .logo{width:72px; height:72px; border-radius:14px; background:linear-gradient(135deg,#f250b4,hwb(337 1% 31%)); display:inline-flex; align-items:center; justify-content:center; font-weight:700; color:var(--accent); box-shadow:var(--shadow)}
+    h1{margin:0; font-size:20px}
+    p.lead{margin:0; color:var(--muted); font-size:13px}
+
+    main{display:grid; grid-template-columns: 1fr 340px; gap:18px}
+    @media (max-width:920px){ main{grid-template-columns:1fr} .aside-sticky{position:static} }
+
+    .menu-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+    @media (max-width:640px){ .menu-grid{grid-template-columns:1fr} }
+
+    .card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+    .media{height:160px; background:var(--glass); display:flex; align-items:center; justify-content:center}
+    .media img{width:100%; height:100%; object-fit:cover}
+    .card-body{padding:12px}
+    .item-title{font-weight:600}
+    .price{color:var(--accent); font-weight:700}
+    .controls{display:flex; align-items:center; gap:8px; margin-top:10px}
+    .qty{width:64px; text-align:center; padding:6px; border-radius:8px; border:1px solid #e6e6e6}
+    .btn{background:var(--accent); color:#ffffff; padding:8px 12px; border-radius:10px; border:none; cursor:pointer}
+    .btn.secondary{background:transparent; color:var(--accent); border:1px solid var(--accent)}
+
+    .aside{position:sticky; top:22px}
+    .aside .summary{padding:12px}
+    .list-item{display:flex; gap:8px; align-items:center; margin-bottom:10px}
+    .list-item img{width:54px; height:54px; object-fit:cover; border-radius:8px}
+    .muted{color:var(--muted); font-size:13px}
+
+    footer{margin-top:22px; text-align:center; color:var(--muted); font-size:13px}
+
+    /* small helpers */
+    .row{display:flex; gap:8px; align-items:center}
+    .right{margin-left:auto}
+
+    /* Filter Button Styles */
+    .filter-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 8px 16px;
+      border: 1px solid #e6e6e6;
+      background: var(--card);
+      color: var(--muted);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .filter-btn:hover {
+      background: #fdfcfb;
+      border-color: #ddd;
+    }
+    .filter-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">CI</div>
+        <div>
+          <h1>Cafe Khas Indonesia</h1>
+          <p class="lead">Pemilik: <strong>Tri Asiyah Agustine</strong> • Bandung • Berdiri 2025</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="muted">Kontak</div>
+        <a href="tel:088806318976" class="btn secondary">088806318976</a>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <div style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px">
+          <h2 style="margin:0">Daftar Menu Khas Indonesia</h2>
+          <div class="muted">Pilih jumlah lalu pesan via WhatsApp</div>
+        </div>
+
+        <div class="filter-group" id="filterContainer">
+          <button class="filter-btn active" data-filter="semua">Semua</button>
+          <button class="filter-btn" data-filter="makanan">Makanan</button>
+          <button class="filter-btn" data-filter="minuman">Minuman</button>
+          <button class="filter-btn" data-filter="penutup">Makanan Penutup</button>
+        </div>
+        <div class="menu-grid" id="menuGrid">
+          </div>
+      </section>
+
+      <aside class="aside-sticky aside">
+        <div class="card">
+          <div class="card-body summary">
+            <h3 style="margin:0 0 8px 0">Ringkasan Pesanan</h3>
+            <div id="emptyMsg" class="muted">Belum ada pesanan.</div>
+            <div id="orderList"></div>
+
+            <div style="border-top:1px dashed #eee; margin-top:12px; padding-top:12px">
+              <div class="row"><div class="muted">Total Item</div><div class="right" id="totalItems">0</div></div>
+              <div class="row" style="margin-top:8px"><div class="muted">Total Harga</div><div class="right" id="totalPrice">Rp 0</div></div>
+
+              <a id="waBtn" href="#" target="_blank" class="btn" style="display:block; text-align:center; margin-top:12px;">Pesan via WhatsApp</a>
+              
+              </div>
+
+            <div class="muted" style="margin-top:10px; font-size:12px">Toko: Bandung • Berdiri 2025<br>Pemilik: Tri Asiyah Agustine<br>Kontak: 088806318976</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      &copy; <span id="year"></span> Cafe Khas Indonesia • Dibuat untuk Tri Asiyah Agustine
+    </footer>
+  </div>
+
+  <script>
+    // Data awal - ganti URL gambar dengan foto Anda
+    const cafe = { name: 'Cafe Khas Indonesia', owner: 'Tri Asiyah Agustine', city: 'Bandung', phone: '088806318976', year: 2025 };
+
+    // URL Placeholder - Ganti dengan URL gambar Anda
+    const placeholderImg = 'https://placehold.co/600x400/e2e8f0/94a3b8?text=Foto+Menu';
+
+    const initialMenu = [
+      // MAKANAN (17 item)
+      { id:1, name:'Nasi Liwet Komplit', price:35000, img: "https://nibble-images.b-cdn.net/nibble/original_images/nasi_liwet_enak_di_bandung_01_da1e8f6a5a_2AdIq5rIk.jpg", qty:0, category: 'makanan' },
+      { id:2, name:'Sate Maranggi', price:30000, img: "https://assets.unileversolutions.com/v1/126151707.png", qty:0, category: 'makanan' },
+      { id:3, name:'Nasi Goreng Kampung', price:25000, img: "https://babe.com.my/wp-content/uploads/2025/04/nasi-goreng-kampung-recipe-village-style-fried-rice-1745378923.jpg", qty:0, category: 'makanan' },
+      { id:4, name:'Kwetiaw Goreng', price:25000, img: "https://i.pinimg.com/736x/ca/e7/5e/cae75e8be6c4e34d256a0827897267a8.jpg", qty:0, category: 'makanan' },
+      { id:5, name:'Nasi Bakar', price:28000, img: "https://buckets.sasa.co.id/v1/AUTH_Assets/Assets/p/website/medias/page_medias/resep_nasi_bakar_ayam_bali.jpg", qty:0, category: 'makanan' },
+      { id:6, name:'Ayam Goreng', price:22000, img: "https://assets.promediateknologi.id/crop/0x0:0x0/0x0/webp/photo/p3/105/2024/07/15/ayam-goreng-ungkep-263652093.jpg", qty:0, category: 'makanan' },
+      { id:7, name:'Ayam Bakar', price:24000, img: "https://nusadaily.com/uploads/images/202303/image_750x_6423c32e15b7f.jpg", qty:0, category: 'makanan' },
+      { id:8, name:'Rendang', price:32000, img: "https://www.astronauts.id/blog/wp-content/uploads/2023/03/Resep-Rendang-Daging-Sapi-Untuk-Lebaran-Gurih-dan-Nikmat.jpg", qty:0, category: 'makanan' },
+      { id:9, name:'Dendeng', price:30000, img: "https://asset.kompas.com/crops/sOuyO86K4EXjTCRmHWBd4caSFKc=/38x72:838x605/1200x800/data/photo/2022/04/02/6247cfd4495ba.jpg", qty:0, category: 'makanan' },
+      { id:10, name:'Ayam betutu', price:40000, img: "https://nibble-images.b-cdn.net/nibble/original_images/ayam-betutu-enak-di-jakarta-01.jpg?class=large", qty:0, category: 'makanan' },
+      { id:11, name:'Ayam Taliwang', price:40000, img: "https://awsimages.detik.net.id/community/media/visual/2023/02/01/resep-ayam-taliwang-khas-lombok_43.jpeg?w=1200", qty:0, category: 'makanan' },
+      { id:12, name:'Tumis Kangkung', price:15000, img: "https://www.cookmeindonesian.com/wp-content/uploads/2020/03/tumis-kangkung-terasi-final.jpg", qty:0, category: 'makanan' },
+      { id:13, name:'Tumis Capcay', price:20000, img: "https://asset.kompas.com/crops/GYOKn_zv2utoaBuHiQZFKHkfVL0=/0x0:1000x667/1200x800/data/photo/2020/08/03/5f280fb54dcf3.jpg", qty:0, category: 'makanan' },
+      { id:14, name:'Ikan Goreng', price:26000, img: "https://asset.kompas.com/crops/bd2XXwaby5bNlbNReOIy4sSQWtQ=/0x0:1000x667/1200x800/data/photo/2020/04/20/5e9da17b42993.jpg", qty:0, category: 'makanan' },
+      { id:15, name:'Ikan Bakar', price:28000, img: "https://asset.kompas.com/crops/TDPZbS20DNsdoD1ySXMOdkpe1yc=/0x0:1000x667/1200x800/data/photo/2020/12/17/5fdb3cd0c1525.jpg", qty:0, category: 'makanan' },
+      { id:16, name:'Cumi Goreng', price:25000, img: "https://www.dapurkobe.co.id/wp-content/uploads/cumi-goreng-terasi.jpg", qty:0, category: 'makanan' },
+      { id:17, name:'Cumi Bakar', price:29000, img: "https://i0.wp.com/resepkoki.id/wp-content/uploads/2017/02/Resep-Cumi-Bakar.jpg?fit=1920%2C1848&ssl=1", qty:0, category: 'makanan' },
+
+      // MINUMAN (8 item)
+      { id:18, name:'Jus Mangga', price:18000, img: "https://smpn11.bimakota.sch.id/upload/kontent/1714484140_d323e4d44ab2671a605d.jpeg", qty:0, category: 'minuman' },
+      { id:19, name:'Jus Alpukat', price:18000, img: "https://mymilk.com/uploads/Segarnya%20Jus%20Alpukat%20Susu%20Full%20Cream.jpg", qty:0, category: 'minuman' },
+      { id:20, name:'Jus Stawberry', price:18000, img: "https://lautan-natural-krimerindo.com/wp-content/uploads/2023/06/Resep-Membuat-Smoothies-Stroberi-Dengan-Susu-Skim-Praktis-1024x1024.jpg", qty:0, category: 'minuman' },
+      { id:21, name:'Kopi Tubruk', price:12000, img: "https://awsimages.detik.net.id/community/media/visual/2018/09/28/abb364fb-a7c3-4851-977a-f270ced32c62.jpeg?w=600&q=90", qty:0, category: 'minuman' },
+      { id:22, name:'Kopi Susu', price:15000, img: "https://awsimages.detik.net.id/community/media/visual/2025/10/09/perbedaan-kopi-susu-1759991528722_169.jpeg?w=1200", qty:0, category: 'minuman' },
+      { id:23, name:'Teh Tawar', price:5000, img: "https://static.promediateknologi.id/crop/0x0:0x0/0x0/webp/photo/p2/244/2025/09/25/tehtwr-1265123671.jpg", qty:0, category: 'minuman' },
+      { id:24, name:'Teh Manis', price:6000, img: "https://awsimages.detik.net.id/community/media/visual/2023/10/17/es-teh-manis_169.jpeg?w=1200", qty:0, category: 'minuman' },
+      { id:25, name:'Es Kelapa', price:15000, img: "https://www.tagar.id/Asset/uploads2019/1587724011494-es-kelapa.jpg", qty:0, category: 'minuman' },
+      { id:25, name:'Es kuwut Bali', price:15000, img: "https://www.frisianflag.com/storage/app/media/uploaded-files/es-kuwut-bali.jpg", qty:0, category: 'minuman' },
+
+
+      // MAKANAN PENUTUP (5 item)
+      { id:26, name:'Es Campur', price:20000, img: "https://resepmamiku.com/wp-content/uploads/2023/05/es-campur-mutiara-kuah-santan-dapoerliandra.jpg", qty:0, category: 'penutup' },
+      { id:27, name:'Es Buah', price:20000, img: "https://asset.kompas.com/crops/a1oVcPLUl3jySz37fBPAo6kXQMY=/0x0:780x520/1200x800/data/photo/2024/03/26/66025af6f18a4.jpg", qty:0, category: 'penutup' },
+      { id:28, name:'Kue Ape', price:10000, img: "https://www.senibudayabetawi.com/wp-content/uploads/2022/09/ksop.jpg", qty:0, category: 'penutup' },
+      { id:29, name:'Es Pisang Ijo', price:18000, img: "https://palpos.bacakoran.co/upload/17372d014301c63b0f9c84a2a597453d.jpg", qty:0, category: 'penutup' },
+      { id:30, name:'Kue Balok', price:15000, img: "https://assets.radarcirebon.id/main/2023/08/81e3840e-95d3-47e1-9671-6d22ce42bc71_Go-Biz_20221108_153226.webp", qty:0, category: 'penutup' }
+    ];
+
+    const menuGrid = document.getElementById('menuGrid');
+    const orderList = document.getElementById('orderList');
+    const totalItemsEl = document.getElementById('totalItems');
+    const totalPriceEl = document.getElementById('totalPrice');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const waBtn = document.getElementById('waBtn');
+    
+    // === DIHAPUS: const saveBtn ===
+    // const saveBtn = document.getElementById('saveBtn'); 
+    
+    const filterContainer = document.getElementById('filterContainer');
+    let currentFilter = 'semua'; // Filter default
+
+    const phoneForWA = cafe.phone.replace(/^0/, '62'); // convert to international for wa link
+
+    function formatRupiah(n){
+      return 'Rp ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    function renderMenu(){
+      menuGrid.innerHTML = '';
+      
+      const itemsToRender = currentFilter === 'semua'
+        ? initialMenu
+        : initialMenu.filter(item => item.category === currentFilter);
+
+      if (itemsToRender.length === 0) {
+        menuGrid.innerHTML = `<div class="muted" style="grid-column: 1 / -1; text-align: center; padding: 20px; min-height: 150px;">Tidak ada menu di kategori ini.</div>`;
+      }
+
+      itemsToRender.forEach(item=>{
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="media"><img src="${item.img}" alt="${item.name}" loading="lazy"></div>
+          <div class="card-body">
+            <div class="item-title">${item.name}</div>
+            <div class="muted">${formatRupiah(item.price)}</div>
+            <div class="controls">
+              <button class="btn secondary" data-action="dec" data-id="${item.id}">-</button>
+              <input class="qty" type="number" min="0" value="${item.qty}" data-id="${item.id}">
+              <button class="btn" data-action="inc" data-id="${item.id}">+</button>
+              <div class="right muted">Subtotal: <span id="sub-${item.id}">${formatRupiah(item.price*item.qty)}</span></div>
+            </div>
+          </div>
+        `;
+        menuGrid.appendChild(card);
+      });
+
+      menuGrid.querySelectorAll('button[data-action]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id = Number(btn.dataset.id);
+          const action = btn.dataset.action;
+          changeQty(id, action === 'inc' ? 1 : -1);
+        });
+      });
+      menuGrid.querySelectorAll('input.qty').forEach(input=>{
+        input.addEventListener('change', (e)=>{
+          const id = Number(input.dataset.id);
+          let val = Math.max(0, Math.floor(Number(input.value) || 0));
+          setQty(id, val);
+        });
+      });
+
+      updateSummary();
+    }
+
+    function changeQty(id, delta){
+      const item = initialMenu.find(it => it.id === id);
+      if (!item) return;
+      
+      item.qty = Math.max(0, item.qty + delta);
+      
+      document.querySelectorAll(`input.qty[data-id='${id}']`).forEach(i => i.value = item.qty);
+      const subtotalEl = document.getElementById(`sub-${id}`);
+      if (subtotalEl) {
+        subtotalEl.textContent = formatRupiah(item.qty * item.price);
+      }
+      
+      updateSummary();
+    }
+
+    function setQty(id, val){
+      const item = initialMenu.find(it => it.id === id);
+      if (!item) return;
+
+      item.qty = val;
+      
+      const subtotalEl = document.getElementById(`sub-${id}`);
+      if (subtotalEl) {
+        subtotalEl.textContent = formatRupiah(item.qty * item.price);
+      }
+      
+      updateSummary();
+    }
+
+    function updateSummary(){
+      const selected = initialMenu.filter(i=>i.qty>0);
+      orderList.innerHTML = '';
+      if(selected.length===0){ emptyMsg.style.display = 'block'; } else { emptyMsg.style.display = 'none'; }
+
+      let totalItems = 0; let totalPrice = 0;
+      selected.forEach(i=>{
+        totalItems += i.qty; totalPrice += i.qty * i.price;
+        const node = document.createElement('div'); node.className='list-item';
+        node.innerHTML = `<img src="${i.img}" alt="${i.name}"><div style="flex:1"><div style="font-weight:600">${i.name} x${i.qty}</div><div class="muted">${formatRupiah(i.price*i.qty)}</div></div>`;
+        orderList.appendChild(node);
+      });
+
+      totalItemsEl.textContent = totalItems;
+      totalPriceEl.textContent = formatRupiah(totalPrice);
+
+      const message = selected.length>0 ? selected.map(it=>`${it.name} x${it.qty}`).join(', ') + ` | Total: ${formatRupiah(totalPrice)}` : '(belum ada item)';
+      waBtn.href = `https://wa.me/${phoneForWA}?text=${encodeURIComponent('Halo '+cafe.name+', saya mau pesan: '+message)}`;
+      waBtn.style.display = 'block';
+
+    }
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // === DIHAPUS: Event listener untuk saveBtn ===
+    /*
+    saveBtn.addEventListener('click', ()=>{
+      const selected = initialMenu.filter(i=>i.qty>0);
+      if(selected.length===0) return alert('Belum ada pesanan.');
+      alert('Terima kasih, pesanan Anda sudah dicatat (demo).\nTotal: ' + document.getElementById('totalPrice').textContent);
+    });
+    */
+    // === END: Dihapus ===
+
+    filterContainer.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') return;
+      const filter = e.target.dataset.filter;
+      if (filter === currentFilter) return; 
+
+      currentFilter = filter;
+
+      filterContainer.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      e.target.classList.add('active');
+
+      renderMenu();
+    });
+
+    // init
+    renderMenu(); 
+
+    // Tips: untuk mengganti gambar, ubah properti 'img' pada initialMenu di bagian atas.
+  </script>
+</body>
+</html>
